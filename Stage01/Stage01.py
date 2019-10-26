@@ -14,17 +14,20 @@ class Stage:
         self.image = load_image('map_flopy_tile2.png')
         self.x, self.y = 50, 25
 
-    def update(self):
+
+    def background_draw(self):
+        self.image.draw(self.x, self.y, 100, 50)
         self.x += 100
-        if(self.x>=800):
+        if (self.x >= 800):
             self.y += 50
             self.x = 50
+    pass
 
-
-
-    def draw(self):
-        self.image.draw(self.x, self.y, 100, 50)
-pass
+class Player:
+    def __init__(self):
+        self.x, self.y = 400,300
+        self.frame = 0
+        self.image = load_image('unit_dao.png')
 
 # 초기화
 global running
@@ -36,9 +39,15 @@ running = True
 # 반복구간
 
 while(running):
-    stage.draw()
+    clear_canvas()
+    while(True):
+        stage.background_draw()
+        if(stage.y >= 600):
+            stage.y = 25
+            break
+
     update_canvas()
-    stage.update()
+
     delay(0.01)
 
 close_canvas()
