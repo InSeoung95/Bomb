@@ -26,14 +26,26 @@ class Stage:
 class Player:
     def __init__(self):
         self.x, self.y = 400,300
-        self.frame = 0
+        self.width_frame_x, self.width_frame_y = 0, 0
+        self.height_frame_x, self.height_frame_y = 0, 0
         self.image = load_image('unit_dao.png')
+
+    def run_width(self):
+        self.width_frame_y = 610
+
+        self.image.clip_draw(self.width_frame_x, self.width_frame_y, 81, 81, self.x, self.y)
+
+    def run_height(self):
+        self.height_frame_x=0
+
+        self.image.clip_draw(self.height_frame_x, self.height_frame_y, 120, 70, self.x, self.y)
 
 # 초기화
 global running
 stage = Stage()
-
-
+player = Player()
+player.width_frame_x = 243
+player.height_frame_y = 405
 running = True
 
 # 반복구간
@@ -46,8 +58,18 @@ while(running):
             stage.y = 25
             break
 
+    player.run_width()
+    player.width_frame_x += 74
+    if(player.width_frame_x>= 486):
+        player.width_frame_x = 243
+
+    player.run_height()
+    player.height_frame_y += 73
+    if (player.height_frame_y >= 648):
+        player.height_frame_y = 405
+
     update_canvas()
 
-    delay(0.01)
+    delay(0.5)
 
 close_canvas()
