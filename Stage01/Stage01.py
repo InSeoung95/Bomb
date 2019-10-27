@@ -26,50 +26,96 @@ class Stage:
 class Player:
     def __init__(self):
         self.x, self.y = 400,300
-        self.width_frame_x, self.width_frame_y = 0, 0
-        self.height_frame_x, self.height_frame_y = 0, 0
+        self.width_frame_x, self.width_frame_y = 243, 610
+        self.height_frame_x, self.height_frame_y = 0, 405
         self.image = load_image('unit_dao.png')
 
-    def run_width(self):
-        self.width_frame_y = 610
+        '''
+        왼, 오른쪽 이동. clip draw(243 +@, 610, 81, 81,x, y)
+        앞으로 이동. clip
+        '''
+
+    def go_right(self):
 
         self.image.clip_draw(self.width_frame_x, self.width_frame_y, 81, 81, self.x, self.y)
 
-    def run_height(self):
-        self.height_frame_x=0
+
+    def go_front(self):
 
         self.image.clip_draw(self.height_frame_x, self.height_frame_y, 120, 70, self.x, self.y)
+
+    def go_back(self):
+        self.height_frame_x = 120
+        self.image.clip_draw(self.height_frame_x, self.height_frame_y, 80, 70, self.x, self.y)
+
+    def handle_event(self):
+        global running
+        global dir
+        events = get_events()
+        for event in events:
+            if event.type == SDL_QUIT:
+                running = False
+            elif event.type == SDL_KEYDOWN:
+                if event.key == SDLK_d:
+                    dir += 0.1
+                    self.x += dir* 5
+                    self.go_right()
+                    self.width_frame_x += 74
+                    if (self.width_frame_x >= 486):
+                        self.width_frame_x = 243
+
+                elif event.key == SDLK_a:
+                    self.x -= 10
+                    self.go_right()
+                    self.width_frame_x += 74
+                    if (self.width_frame_x >= 486):
+                        self.width_frame_x = 243
+
+                elif event.key == SDLK_w:
+                    self.y += 10
+                    self.go_front()
+                    self.height_frame_y += 73
+                    if (self.height_frame_y >= 648):
+                        self.height_frame_y = 405
+
+
+                elif event.key == SDLK_s:
+                    self.y -= 10
+                    self.go_back()
+                    self.height_frame_y += 73
+                    if (self.height_frame_y >= 648):
+                        self.height_frame_y = 405
+                elif event.key == SDLK_ESCAPE:
+                    running = False
+
+
+
+
+
+
 
 # 초기화
 global running
 stage = Stage()
 player = Player()
-player.width_frame_x = 243
-player.height_frame_y = 405
+dir = 0
+
 running = True
 
 # 반복구간
 
 while(running):
     clear_canvas()
+
     while(True):
         stage.background_draw()
         if(stage.y >= 600):
             stage.y = 25
             break
-
-    player.run_width()
-    player.width_frame_x += 74
-    if(player.width_frame_x>= 486):
-        player.width_frame_x = 243
-
-    player.run_height()
-    player.height_frame_y += 73
-    if (player.height_frame_y >= 648):
-        player.height_frame_y = 405
-
+    player.handle_event()
     update_canvas()
 
-    delay(0.5)
+
+    delay(0.01)
 
 close_canvas()
