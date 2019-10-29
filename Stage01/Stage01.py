@@ -25,19 +25,26 @@ class Stage:
 
 class Player:
     def __init__(self):
-        self.x, self.y = 400,300
+        self.x, self.y = 400, 300
+        self.frame_x, self.frame_y = 0, 0
+        self.width, self.height = 0, 0
+        self.vertical_dir, self.horizon_dir = 0, 0
+        '''
         self.width_frame_x, self.width_frame_y = 243, 610
         self.height_frame_x, self.height_frame_y = 0, 405
         self.image = load_image('unit_dao.png')
-
+        '''
         '''
         왼, 오른쪽 이동. clip draw(243 +@, 610, 81, 81,x, y)
-        앞으로 이동. clip
+        앞으로 이동. clip draw(0, 405+@, 120, 70, x, y)
+        뒤로 이동. clip draw(120 , 405+@, 80, 70, x, y)
         '''
+    def go_update(self):
+        self.image.clip_draw(self.frame_x, self.frame_y, self.width, self.height, self.x, self.y)
 
     def go_right(self):
 
-        self.image.clip_draw(self.width_frame_x, self.width_frame_y, 81, 81, self.x, self.y)
+        self.image.clip_draw(self.frame_x, self.width_frame_y, 81, 81, self.x, self.y)
 
 
     def go_front(self):
@@ -50,26 +57,37 @@ class Player:
 
     def handle_event(self):
         global running
-        global dir
+
         events = get_events()
         for event in events:
             if event.type == SDL_QUIT:
                 running = False
             elif event.type == SDL_KEYDOWN:
                 if event.key == SDLK_d:
-                    dir += 0.1
-                    self.x += dir* 5
-                    self.go_right()
-                    self.width_frame_x += 74
-                    if (self.width_frame_x >= 486):
-                        self.width_frame_x = 243
+                    self.horizon_dir += 1
+                    self.x += self.horizon_dir* 5
+
+                    self.frame_x + 243
+                    self.frame_y = 610
+                    self.width, self.height = 81, 81
+                    self.go_update()
+
+                    self.frame_x += 74
+                    if (self.frame_x >= 486):
+                        self.frame_x = 243
 
                 elif event.key == SDLK_a:
-                    self.x -= 10
-                    self.go_right()
-                    self.width_frame_x += 74
-                    if (self.width_frame_x >= 486):
-                        self.width_frame_x = 243
+                    self.horizon_dir -= 1
+                    self.x -= self.horizon_dir*5
+
+                    self.frame_x + 243
+                    self.frame_y = 610
+                    self.width, self.height = 81, 81
+                    self.go_update()
+
+                    self.frame_x += 74
+                    if (self.frame_x >= 486):
+                        self.frame_x = 243
 
                 elif event.key == SDLK_w:
                     self.y += 10
