@@ -26,14 +26,16 @@ class Stage:
 class Player:
     def __init__(self):
         self.x, self.y = 400, 300
-        self.frame_x, self.frame_y = 0, 0
-        self.width, self.height = 0, 0
+        self.frame_x, self.frame_y = 120, 405
+        self.width, self.height = 80, 70
         self.vertical_dir, self.horizon_dir = 0, 0
-        '''
-        self.width_frame_x, self.width_frame_y = 243, 610
-        self.height_frame_x, self.height_frame_y = 0, 405
+
+        self.right_frame_x, self.right_frame_y = 243, 610
+        self.up_frame_x, self.up_frame_y = 40, 405
+        self.down_frame_x, self.down_frame_y = 120, 405
+
         self.image = load_image('unit_dao.png')
-        '''
+
         '''
         왼, 오른쪽 이동. clip draw(243 +@, 610, 81, 81,x, y)
         앞으로 이동. clip draw(0, 405+@, 120, 70, x, y)
@@ -43,17 +45,23 @@ class Player:
         self.image.clip_draw(self.frame_x, self.frame_y, self.width, self.height, self.x, self.y)
 
     def go_right(self):
-
-        self.image.clip_draw(self.frame_x, self.width_frame_y, 81, 81, self.x, self.y)
-
+        self.image.clip_draw(self.right_frame_x, self.right_frame_y, 81, 81, self.x, self.y)
+        self.right_frame_x += 74
+        if (self.right_frame_x >= 486):
+            self.right_frame_x = 243
 
     def go_front(self):
-
-        self.image.clip_draw(self.height_frame_x, self.height_frame_y, 120, 70, self.x, self.y)
-
+        self.image.clip_draw(self.up_frame_x, self.up_frame_y, 120, 70, self.x-100, self.y)
+        '''
+        self.up_frame_y += 73
+        if (self.up_frame_y >= 648):
+            self.up_frame_y = 405
+        '''
     def go_back(self):
-        self.height_frame_x = 120
-        self.image.clip_draw(self.height_frame_x, self.height_frame_y, 80, 70, self.x, self.y)
+        self.image.clip_draw(self.down_frame_x, self.down_frame_y, 80, 70, self.x, self.y)
+        self.down_frame_y += 73
+        if (self.down_frame_y >= 648):
+            self.down_frame_y = 405
 
     def handle_event(self):
         global running
@@ -67,44 +75,84 @@ class Player:
                     self.horizon_dir += 1
                     self.x += self.horizon_dir* 5
 
-                    self.frame_x + 243
-                    self.frame_y = 610
-                    self.width, self.height = 81, 81
-                    self.go_update()
+                    self.right_frame_x += 74
+                    if (self.right_frame_x >= 486):
+                        self.right_frame_x = 243
+                    self.frame_x = self.right_frame_x
+                    self.frame_y = self.right_frame_y
 
-                    self.frame_x += 74
-                    if (self.frame_x >= 486):
-                        self.frame_x = 243
+                    self.width, self.height = 80, 80
+                    #self.go_right()
+
 
                 elif event.key == SDLK_a:
                     self.horizon_dir -= 1
-                    self.x -= self.horizon_dir*5
+                    self.x += self.horizon_dir*5
 
-                    self.frame_x + 243
-                    self.frame_y = 610
-                    self.width, self.height = 81, 81
-                    self.go_update()
+                    self.right_frame_x += 74
+                    if (self.right_frame_x >= 486):
+                        self.right_frame_x = 243
+                    self.frame_x = self.right_frame_x
+                    self.frame_y = self.right_frame_y
 
-                    self.frame_x += 74
-                    if (self.frame_x >= 486):
-                        self.frame_x = 243
+                    self.width, self.height = 80, 80
+                    #self.go_right()
 
                 elif event.key == SDLK_w:
-                    self.y += 10
-                    self.go_front()
-                    self.height_frame_y += 73
-                    if (self.height_frame_y >= 648):
-                        self.height_frame_y = 405
+                    self.vertical_dir += 1
+                    self.y += self.vertical_dir*5
+
+                    self.up_frame_y += 73
+                    if (self.up_frame_y >= 648):
+                        self.up_frame_y = 405
+                    self.frame_x = self.up_frame_x
+                    self.frame_y =self.up_frame_y
+
+                    self.width, self.height = 80, 70
+                    #self.go_front()
 
 
                 elif event.key == SDLK_s:
-                    self.y -= 10
-                    self.go_back()
-                    self.height_frame_y += 73
-                    if (self.height_frame_y >= 648):
-                        self.height_frame_y = 405
+                    self.vertical_dir -= 1
+                    self.y += self.vertical_dir*5
+
+
+                    self.down_frame_y += 73
+                    if (self.down_frame_y >= 648):
+                        self.down_frame_y = 405
+                    self.frame_x = self.down_frame_x
+                    self.frame_y =self.down_frame_y
+
+                    self.width, self.height = 80, 70
+
+                    #self.go_back()
+
                 elif event.key == SDLK_ESCAPE:
                     running = False
+            elif event.type == SDL_KEYUP:
+                if event.key == SDLK_d:
+                    self.horizon_dir -= 1
+                    self.x += self.horizon_dir* 5
+                    #self.go_right()
+
+                elif event.key == SDLK_a:
+                    self.horizon_dir += 1
+                    self.x += self.horizon_dir*5
+                    #self.go_right()
+
+
+                elif event.key == SDLK_w:
+                    self.vertical_dir -= 1
+                    self.y += self.vertical_dir*5
+                    #self.go_front()
+
+                elif event.key == SDLK_s:
+                    self.vertical_dir += 1
+                    self.y += self.vertical_dir*5
+                    #self.go_back()
+
+
+
 
 
 
@@ -116,7 +164,9 @@ class Player:
 global running
 stage = Stage()
 player = Player()
+player.handle_event()
 dir = 0
+
 
 running = True
 
@@ -130,10 +180,10 @@ while(running):
         if(stage.y >= 600):
             stage.y = 25
             break
-    player.handle_event()
+
+    player.go_update()
     update_canvas()
-
-
+    player.handle_event()
     delay(0.01)
 
 close_canvas()
