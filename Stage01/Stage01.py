@@ -36,6 +36,9 @@ class Player:
 
         self.image = load_image('unit_dao.png')
 
+        self.velocity = 5
+        #wself.reverse_image = load_image('unit_dao01.png')
+
         '''
         왼, 오른쪽 이동. clip draw(243 +@, 610, 81, 81,x, y)
         앞으로 이동. clip draw(0, 405+@, 120, 70, x, y)
@@ -65,15 +68,15 @@ class Player:
 
     def handle_event(self):
         global running
-
+        self.image = load_image('unit_dao.png')
         events = get_events()
         for event in events:
             if event.type == SDL_QUIT:
                 running = False
             elif event.type == SDL_KEYDOWN:
                 if event.key == SDLK_d:
-                    self.horizon_dir += 1
-                    self.x += self.horizon_dir* 5
+                    self.horizon_dir += self.velocity
+                    self.x += self.horizon_dir*5
 
                     self.right_frame_x += 74
                     if (self.right_frame_x >= 486):
@@ -86,7 +89,7 @@ class Player:
 
 
                 elif event.key == SDLK_a:
-                    self.horizon_dir -= 1
+                    self.horizon_dir -= self.velocity
                     self.x += self.horizon_dir*5
 
                     self.right_frame_x += 74
@@ -99,7 +102,8 @@ class Player:
                     #self.go_right()
 
                 elif event.key == SDLK_w:
-                    self.vertical_dir += 1
+                   #self.image = load_image('unit_dao01')
+                    self.vertical_dir += self.velocity
                     self.y += self.vertical_dir*5
 
                     self.up_frame_y += 73
@@ -113,7 +117,7 @@ class Player:
 
 
                 elif event.key == SDLK_s:
-                    self.vertical_dir -= 1
+                    self.vertical_dir -= self.velocity
                     self.y += self.vertical_dir*5
 
 
@@ -131,23 +135,23 @@ class Player:
                     running = False
             elif event.type == SDL_KEYUP:
                 if event.key == SDLK_d:
-                    self.horizon_dir -= 1
+                    self.horizon_dir -= self.velocity
                     self.x += self.horizon_dir* 5
                     #self.go_right()
 
                 elif event.key == SDLK_a:
-                    self.horizon_dir += 1
+                    self.horizon_dir += self.velocity
                     self.x += self.horizon_dir*5
                     #self.go_right()
 
 
                 elif event.key == SDLK_w:
-                    self.vertical_dir -= 1
+                    self.vertical_dir -= self.velocity
                     self.y += self.vertical_dir*5
                     #self.go_front()
 
                 elif event.key == SDLK_s:
-                    self.vertical_dir += 1
+                    self.vertical_dir += self.velocity
                     self.y += self.vertical_dir*5
                     #self.go_back()
 
@@ -184,6 +188,16 @@ while(running):
     player.go_update()
     update_canvas()
     player.handle_event()
+    if(player.x<10):
+        player.x = 10
+    elif(player.x>790):
+        player.x = 790
+
+    if(player.y<20):
+        player.y = 20
+    elif(player.y>580):
+        player.y = 580
+
     delay(0.01)
 
 close_canvas()
