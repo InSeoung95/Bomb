@@ -13,6 +13,11 @@ class Stage:
     def __init__(self):
         self.image = load_image('map_flopy_tile2.png')
         self.x, self.y = 50, 25
+        self.object_01 = load_image('map_flopy_object5.png')
+        self.object_x = 100
+        self.object_y = 100
+        self.object_width = 120
+        self.object_height = 40
 
 
     def background_draw(self):
@@ -21,6 +26,12 @@ class Stage:
         if (self.x >= 800):
             self.y += 50
             self.x = 50
+    def object_draw(self):
+        self.object_x = 100
+        self.object_y= 100
+        self.object_width = 120
+        self.object_height = 40
+        self.object_01.draw(self.object_x,self.object_y,self.object_width, self.object_height)
     pass
 
 class Player:
@@ -35,9 +46,9 @@ class Player:
         self.down_frame_x, self.down_frame_y = 120, 405
 
         self.image = load_image('unit_dao.png')
+        #self.reverse_image = load_image('unit_dao01.png')
 
-        self.velocity = 5
-        #wself.reverse_image = load_image('unit_dao01.png')
+        self.velocity = 6
 
         '''
         왼, 오른쪽 이동. clip draw(243 +@, 610, 81, 81,x, y)
@@ -74,10 +85,18 @@ class Player:
             if event.type == SDL_QUIT:
                 running = False
             elif event.type == SDL_KEYDOWN:
+                '''
+                if((stage.object_x-stage.object_width/2 < self.x and stage.object_x+ stage.object_width/2 > self.x)
+                        and(stage.object_y-stage.object_height/2<self.y and stage.object_y+stage.object_height/2>self.y)):
+                    break
+                    '''
+
                 if event.key == SDLK_d:
                     self.horizon_dir += self.velocity
                     self.x += self.horizon_dir*5
-
+                    if ((self.x > 40 and self.x < 160) and (self.y > 100 and self.y < 140)):
+                        self.x = self.x -self.horizon_dir*5
+                        break
                     self.right_frame_x += 74
                     if (self.right_frame_x >= 486):
                         self.right_frame_x = 243
@@ -91,6 +110,9 @@ class Player:
                 elif event.key == SDLK_a:
                     self.horizon_dir -= self.velocity
                     self.x += self.horizon_dir*5
+                    if ((self.x > 40 and self.x < 160) and (self.y > 100 and self.y < 140)):
+                        self.x = self.x -self.horizon_dir*5
+                        break
 
                     self.right_frame_x += 74
                     if (self.right_frame_x >= 486):
@@ -105,6 +127,9 @@ class Player:
                    #self.image = load_image('unit_dao01')
                     self.vertical_dir += self.velocity
                     self.y += self.vertical_dir*5
+                    if ((self.x > 40 and self.x < 160) and (self.y > 100 and self.y < 140)):
+                        self.y = self.y - self.vertical_dir * 5
+                        break
 
                     self.up_frame_y += 73
                     if (self.up_frame_y >= 648):
@@ -119,7 +144,9 @@ class Player:
                 elif event.key == SDLK_s:
                     self.vertical_dir -= self.velocity
                     self.y += self.vertical_dir*5
-
+                    if ((self.x > 40 and self.x < 160) and (self.y > 100 and self.y < 140)):
+                        self.y = self.y -self.vertical_dir*5
+                        break
 
                     self.down_frame_y += 73
                     if (self.down_frame_y >= 648):
@@ -178,12 +205,12 @@ running = True
 
 while(running):
     clear_canvas()
-
-    while(True):
+    while (True):
         stage.background_draw()
-        if(stage.y >= 600):
+        if (stage.y >= 600):
             stage.y = 25
             break
+    stage.object_draw()
 
     player.go_update()
     update_canvas()
