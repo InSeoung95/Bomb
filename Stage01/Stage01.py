@@ -7,6 +7,24 @@ os.chdir('C:\\Users\\황인성\\Desktop\\2016184042_HIS\\크레이지 아케이�
 #클래스 정의
 
 open_canvas()
+class Monster:
+    def __init__(self):
+        self.image = load_image('unit_monster03.png')
+        self.x, self.y = 0, 0
+        self.horizon_dir, self.vertical_dir = 0, 0
+        self.frame_x ,self.frame_y = 0, 0
+        self.width, self.height = 50, 50
+    def draw(self):
+        for i in range(0,2):
+            if(self.horizon_dir>0):
+                self.image.clip_draw(600+50*i+10,10,self.width,self.height,self.x, self.y)
+
+        self.image.clip_draw(self.frame_x, self.frame_y, self.width,self.height,self.x, self.y)
+    #def update(self):
+
+
+    pass
+
 class Item:
     def __init__(self):
         self.item01 = load_image('item_64.png')
@@ -182,8 +200,6 @@ global running
 stage = Stage()
 player = Player()
 item = Item()
-
-dir = 0
 bomb = Bomb()
 
 running = True
