@@ -17,16 +17,14 @@ class Item:
 
 class Bomb:
     def __init__(self):
-        self.idle0 = load_image('Idle (0).png.png')
-        self.idle1 = load_image('Idle (1).png')
-        self.idle2 = load_image('Idle (2).png')
-
-        self.idle = [self.idle0,self.idle1, self.idle2]
+        self.idle_image = load_image('custom_bubble_95.png')
+        self.state = False
+        #self.idle = [self.idle0,self.idle1, self.idle2]
         self.time =0
+        self.bomb_x, self.bomb_y =0, 0
     def draw(self):
-        for i in self.idle:
-            i.draw(player.x, player.y,20,20)
-            delay(0.2)
+        self.idle_image.clip_draw(10,10,50, 50, self.bomb_x, self.bomb_y)
+
     pass
 class Stage:
 
@@ -165,6 +163,11 @@ class Player:
                     self.width, self.height = 80, 70
 
                     #self.go_back()
+                elif event.key == SDLK_SPACE:
+                    bomb.state =True
+                    bomb.bomb_x = player.x
+                    bomb.bomb_y = player.y
+
 
                 elif event.key == SDLK_ESCAPE:
                     running = False
@@ -205,13 +208,12 @@ class Player:
 global running
 stage = Stage()
 player = Player()
-player.handle_event()
 '''
 Item.items = []
 Item.items.append(Item.item1)
 '''
 dir = 0
-#bomb = Bomb()
+bomb = Bomb()
 
 running = True
 
@@ -225,6 +227,8 @@ while(running):
             stage.y = 25
             break
     stage.object_draw()
+    if(bomb.state==True):
+        bomb.draw()
 
     player.go_update()
     update_canvas()
