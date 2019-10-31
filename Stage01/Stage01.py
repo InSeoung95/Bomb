@@ -1,12 +1,16 @@
 from pico2d import *
 import os
-
+import Bomb
 os.getcwd()
 os.chdir('C:\\Users\\황인성\\Desktop\\2016184042_HIS\\크레이지 아케이드 리소스(크아,Crazy Arcade)\\크아이미지')
 
+#bomb = Bomb.Bomb()
 #클래스 정의
 
 open_canvas()
+class Item:
+    
+    pass
 
 class Stage:
 
@@ -27,11 +31,13 @@ class Stage:
             self.y += 50
             self.x = 50
     def object_draw(self):
+
         self.object_x = 100
         self.object_y= 100
         self.object_width = 120
         self.object_height = 40
-        self.object_01.draw(self.object_x,self.object_y,self.object_width, self.object_height)
+        for i in range(0, 5):
+            self.object_01.draw(self.object_x+self.object_width*i,self.object_y,self.object_width, self.object_height)
     pass
 
 class Player:
@@ -46,9 +52,9 @@ class Player:
         self.down_frame_x, self.down_frame_y = 120, 405
 
         self.image = load_image('unit_dao.png')
-        #self.reverse_image = load_image('unit_dao01.png')
+        self.reverse_image = load_image('unit_dao01.png')
 
-        self.velocity = 6
+        self.velocity = 3
 
         '''
         왼, 오른쪽 이동. clip draw(243 +@, 610, 81, 81,x, y)
@@ -92,11 +98,9 @@ class Player:
                     '''
 
                 if event.key == SDLK_d:
+                    #bomb.boming()
                     self.horizon_dir += self.velocity
-                    self.x += self.horizon_dir*5
-                    if ((self.x > 40 and self.x < 160) and (self.y > 100 and self.y < 140)):
-                        self.x = self.x -self.horizon_dir*5
-                        break
+
                     self.right_frame_x += 74
                     if (self.right_frame_x >= 486):
                         self.right_frame_x = 243
@@ -109,10 +113,6 @@ class Player:
 
                 elif event.key == SDLK_a:
                     self.horizon_dir -= self.velocity
-                    self.x += self.horizon_dir*5
-                    if ((self.x > 40 and self.x < 160) and (self.y > 100 and self.y < 140)):
-                        self.x = self.x -self.horizon_dir*5
-                        break
 
                     self.right_frame_x += 74
                     if (self.right_frame_x >= 486):
@@ -126,10 +126,6 @@ class Player:
                 elif event.key == SDLK_w:
                    #self.image = load_image('unit_dao01')
                     self.vertical_dir += self.velocity
-                    self.y += self.vertical_dir*5
-                    if ((self.x > 40 and self.x < 160) and (self.y > 100 and self.y < 140)):
-                        self.y = self.y - self.vertical_dir * 5
-                        break
 
                     self.up_frame_y += 73
                     if (self.up_frame_y >= 648):
@@ -144,9 +140,7 @@ class Player:
                 elif event.key == SDLK_s:
                     self.vertical_dir -= self.velocity
                     self.y += self.vertical_dir*5
-                    if ((self.x > 40 and self.x < 160) and (self.y > 100 and self.y < 140)):
-                        self.y = self.y -self.vertical_dir*5
-                        break
+
 
                     self.down_frame_y += 73
                     if (self.down_frame_y >= 648):
@@ -183,14 +177,6 @@ class Player:
                     #self.go_back()
 
 
-
-
-
-
-
-
-
-
 # 초기화
 global running
 stage = Stage()
@@ -215,6 +201,14 @@ while(running):
     player.go_update()
     update_canvas()
     player.handle_event()
+
+    player.x += player.horizon_dir * 5
+    player.y += player.vertical_dir * 5
+    if ((player.x > 40 and player.x < 640) and (player.y > 100 and player.y < 140)):
+        player.x = player.x - player.horizon_dir*5
+        player.y = player.y - player.vertical_dir * 5
+        continue
+
     if(player.x<10):
         player.x = 10
     elif(player.x>790):
