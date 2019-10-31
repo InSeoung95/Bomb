@@ -1,17 +1,33 @@
 from pico2d import *
 import os
-import Bomb
+
 os.getcwd()
 os.chdir('C:\\Users\\황인성\\Desktop\\2016184042_HIS\\크레이지 아케이드 리소스(크아,Crazy Arcade)\\크아이미지')
 
-#bomb = Bomb.Bomb()
+
 #클래스 정의
 
 open_canvas()
 class Item:
-    
+    def __init__(self):
+        self.item01 = load_image('item_64.png')
+    def draw(self):
+        self.item01.draw(100,400,20,20)
     pass
 
+class Bomb:
+    def __init__(self):
+        self.idle0 = load_image('Idle (0).png.png')
+        self.idle1 = load_image('Idle (1).png')
+        self.idle2 = load_image('Idle (2).png')
+
+        self.idle = [self.idle0,self.idle1, self.idle2]
+        self.time =0
+    def draw(self):
+        for i in self.idle:
+            i.draw(player.x, player.y,20,20)
+            delay(0.2)
+    pass
 class Stage:
 
     def __init__(self):
@@ -52,7 +68,7 @@ class Player:
         self.down_frame_x, self.down_frame_y = 120, 405
 
         self.image = load_image('unit_dao.png')
-        self.reverse_image = load_image('unit_dao01.png')
+        #self.reverse_image = load_image('unit_dao01.png')
 
         self.velocity = 3
 
@@ -107,7 +123,7 @@ class Player:
                     self.frame_x = self.right_frame_x
                     self.frame_y = self.right_frame_y
 
-                    self.width, self.height = 80, 80
+                    self.width, self.height = 80, 70
                     #self.go_right()
 
 
@@ -120,7 +136,7 @@ class Player:
                     self.frame_x = self.right_frame_x
                     self.frame_y = self.right_frame_y
 
-                    self.width, self.height = 80, 80
+                    self.width, self.height = 80, 70
                     #self.go_right()
 
                 elif event.key == SDLK_w:
@@ -139,8 +155,6 @@ class Player:
 
                 elif event.key == SDLK_s:
                     self.vertical_dir -= self.velocity
-                    self.y += self.vertical_dir*5
-
 
                     self.down_frame_y += 73
                     if (self.down_frame_y >= 648):
@@ -157,23 +171,33 @@ class Player:
             elif event.type == SDL_KEYUP:
                 if event.key == SDLK_d:
                     self.horizon_dir -= self.velocity
-                    self.x += self.horizon_dir* 5
+
+                    self.frame_x = 465
+                    self.frame_y = 680
+                    self.width, self.height = 80, 70
                     #self.go_right()
 
                 elif event.key == SDLK_a:
                     self.horizon_dir += self.velocity
-                    self.x += self.horizon_dir*5
+                    self.frame_x = 455
+                    self.frame_y = 680
+                    self.width, self.height = 80, 70
                     #self.go_right()
 
 
                 elif event.key == SDLK_w:
                     self.vertical_dir -= self.velocity
-                    self.y += self.vertical_dir*5
+                    self.frame_x = 290
+                    self.frame_y = 697
+                    self.width, self.height = 80, 70
                     #self.go_front()
 
                 elif event.key == SDLK_s:
                     self.vertical_dir += self.velocity
-                    self.y += self.vertical_dir*5
+                    self.frame_x =370
+                    self.frame_y = 697
+                    self.width, self.height = 80, 70
+
                     #self.go_back()
 
 
@@ -182,8 +206,12 @@ global running
 stage = Stage()
 player = Player()
 player.handle_event()
+'''
+Item.items = []
+Item.items.append(Item.item1)
+'''
 dir = 0
-
+#bomb = Bomb()
 
 running = True
 

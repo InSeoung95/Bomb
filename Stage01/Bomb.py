@@ -1,9 +1,5 @@
 from pico2d import *
 
-import Stage01
-
-player = Stage01.Player()
-
 class Bomb:
     def __init__(self):
         self.idle0 = load_image('Idle (0).png')
@@ -14,6 +10,12 @@ class Bomb:
         self.time =0
     def boming(self):
         for i in self.idle:
-            i.draw(player.x, player.y)
+            i.clip_draw(10,10,20,20)
             delay(0.2)
     pass
+bomb = Bomb()
+
+open_canvas()
+bomb.boming()
+update_canvas()
+clear_canvas()
