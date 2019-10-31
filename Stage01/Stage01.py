@@ -18,12 +18,26 @@ class Item:
 class Bomb:
     def __init__(self):
         self.idle_image = load_image('custom_bubble_95.png')
+        self.spread_image = load_image('unit_bombwater.png')
         self.state = False
-        #self.idle = [self.idle0,self.idle1, self.idle2]
         self.time =0
         self.bomb_x, self.bomb_y =0, 0
+        self.dir=0
     def draw(self):
-        self.idle_image.clip_draw(10,10,50, 50, self.bomb_x, self.bomb_y)
+        self.idle_image.clip_draw(10+self.dir*73,10,50, 50, self.bomb_x, self.bomb_y)
+        self.dir += 1
+        if(self.dir >2):
+            self.dir = 0
+        self.time += 1
+        if(self.time > 70):
+            self.state = False
+            self.time = 0
+        if(self.state==False):
+            for i in range(0,4):
+                self.spread_image.clip_draw(260+65*i,252,60,70,self.bomb_x+25,self.bomb_y )#오른쪽 터질 때
+                self.spread_image.clip_draw(260+65*i,180,60,70,self.bomb_x-25,self.bomb_y )#왼쪽 터질 때
+                self.spread_image.clip_draw(10+65*i,180,60,70, self.bomb_x,self.bomb_y+25)#위쪽 터질 때
+                self.spread_image.clip_draw(10+65*i,252,60,70, self.bomb_x,self.bomb_y-25)#아래 터질 때
 
     pass
 class Stage:
@@ -208,10 +222,8 @@ class Player:
 global running
 stage = Stage()
 player = Player()
-'''
-Item.items = []
-Item.items.append(Item.item1)
-'''
+item = Item()
+
 dir = 0
 bomb = Bomb()
 
@@ -251,6 +263,6 @@ while(running):
     elif(player.y>580):
         player.y = 580
 
-    delay(0.01)
+    delay(0.02)
 
 close_canvas()
