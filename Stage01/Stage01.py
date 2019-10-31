@@ -34,7 +34,7 @@ class Bomb:
         if(self.dir >2):
             self.dir = 0
         self.time += 1
-        if(self.time > 70):
+        if(self.time > 30):
             self.state = False
             self.time = 0
         if(self.state==False):
@@ -85,10 +85,15 @@ class Player:
         self.up_frame_x, self.up_frame_y = 40, 405
         self.down_frame_x, self.down_frame_y = 120, 405
 
+        self.right_state = False
+        self.up_state = False
+        self.down_state = False
+
         self.image = load_image('unit_dao.png')
         #self.reverse_image = load_image('unit_dao01.png')
 
         self.velocity = 3
+        self.velocity_a =0
 
         '''
         왼, 오른쪽 이동. clip draw(243 +@, 610, 81, 81,x, y)
@@ -112,58 +117,23 @@ class Player:
                         and(stage.object_y-stage.object_height/2<self.y and stage.object_y+stage.object_height/2>self.y)):
                     break
                     '''
-
                 if event.key == SDLK_d:
-                    #bomb.boming()
+                    self.right_state = True
                     self.horizon_dir += self.velocity
 
-                    self.right_frame_x += 74
-                    if (self.right_frame_x >= 486):
-                        self.right_frame_x = 243
-                    self.frame_x = self.right_frame_x
-                    self.frame_y = self.right_frame_y
-
-                    self.width, self.height = 80, 70
-                    #self.go_right()
-
-
                 elif event.key == SDLK_a:
+                    self.right_state = True
                     #self.image = load_image('unit_dao_reverse.png')
                     self.horizon_dir -= self.velocity
 
-                    self.right_frame_x += 74
-                    if (self.right_frame_x >= 486):
-                        self.right_frame_x = 243
-                    self.frame_x = self.right_frame_x
-                    self.frame_y = self.right_frame_y
-
-                    self.width, self.height = 80, 70
-                    #self.go_right()
-
                 elif event.key == SDLK_w:
+                    self.up_state = True
                    #self.image = load_image('unit_dao01')
                     self.vertical_dir += self.velocity
 
-                    self.up_frame_y += 73
-                    if (self.up_frame_y >= 648):
-                        self.up_frame_y = 405
-                    self.frame_x = self.up_frame_x
-                    self.frame_y =self.up_frame_y
-
-                    self.width, self.height = 80, 70
-                    #self.go_front()
-
-
                 elif event.key == SDLK_s:
+                    self.down_state = True
                     self.vertical_dir -= self.velocity
-
-                    self.down_frame_y += 73
-                    if (self.down_frame_y >= 648):
-                        self.down_frame_y = 405
-                    self.frame_x = self.down_frame_x
-                    self.frame_y =self.down_frame_y
-
-                    self.width, self.height = 80, 70
 
                     #self.go_back()
                 elif event.key == SDLK_SPACE:
@@ -176,6 +146,7 @@ class Player:
                     running = False
             elif event.type == SDL_KEYUP:
                 if event.key == SDLK_d:
+                    self.right_state = False
                     self.horizon_dir -= self.velocity
 
                     self.frame_x = 465
@@ -184,6 +155,7 @@ class Player:
                     #self.go_right()
 
                 elif event.key == SDLK_a:
+                    self.right_state = False
                     self.horizon_dir += self.velocity
                     self.frame_x = 455
                     self.frame_y = 680
@@ -192,6 +164,7 @@ class Player:
 
 
                 elif event.key == SDLK_w:
+                    self.up_state = False
                     self.vertical_dir -= self.velocity
                     self.frame_x = 290
                     self.frame_y = 697
@@ -199,6 +172,7 @@ class Player:
                     #self.go_front()
 
                 elif event.key == SDLK_s:
+                    self.down_state = False
                     self.vertical_dir += self.velocity
                     self.frame_x =370
                     self.frame_y = 697
@@ -237,8 +211,28 @@ while(running):
     update_canvas()
     player.handle_event()
 
+    if(player.right_state == True):
+        player.right_frame_x += 74
+        if (player.right_frame_x >= 486):
+            player.right_frame_x = 243
+        player.frame_x = player.right_frame_x
+        player.frame_y = player.right_frame_y
+    elif(player.up_state == True):
+        player.up_frame_y += 73
+        if (player.up_frame_y >= 648):
+            player.up_frame_y = 405
+        player.frame_x = player.up_frame_x
+        player.frame_y = player.up_frame_y
+    elif(player.down_state == True):
+        player.down_frame_y += 73
+        if (player.down_frame_y >= 648):
+            player.down_frame_y = 405
+        player.frame_x = player.down_frame_x
+        player.frame_y = player.down_frame_y
+
     player.x += player.horizon_dir * 5
     player.y += player.vertical_dir * 5
+
     if ((player.x > 40 and player.x < 640) and (player.y > 100 and player.y < 140)):
         player.x = player.x - player.horizon_dir*5
         player.y = player.y - player.vertical_dir * 5
@@ -246,8 +240,6 @@ while(running):
     if((player.x>70 and player.x<130) and (player.y> 370 and player.y < 430)):
         if(item.state==True):
             item.state = False
-
-
 
     if(player.x<10):
         player.x = 10
@@ -259,6 +251,6 @@ while(running):
     elif(player.y>580):
         player.y = 580
 
-    delay(0.02)
+    delay(0.05)
 
 close_canvas()
