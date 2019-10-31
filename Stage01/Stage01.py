@@ -11,8 +11,13 @@ open_canvas()
 class Item:
     def __init__(self):
         self.item01 = load_image('item_64.png')
+        self.height, self.width = 60, 60
+        self.state = True
     def draw(self):
-        self.item01.draw(100,400,20,20)
+        self.item01.draw(100,400,self.height,self.height)
+    def eat(self):
+        self.state = False
+        player.velocity += 10
     pass
 
 class Bomb:
@@ -38,8 +43,9 @@ class Bomb:
                 self.spread_image.clip_draw(260+65*i,180,60,70,self.bomb_x-25,self.bomb_y )#왼쪽 터질 때
                 self.spread_image.clip_draw(10+65*i,180,60,70, self.bomb_x,self.bomb_y+25)#위쪽 터질 때
                 self.spread_image.clip_draw(10+65*i,252,60,70, self.bomb_x,self.bomb_y-25)#아래 터질 때
-
     pass
+
+
 class Stage:
 
     def __init__(self):
@@ -92,24 +98,6 @@ class Player:
     def go_update(self):
         self.image.clip_draw(self.frame_x, self.frame_y, self.width, self.height, self.x, self.y)
 
-    def go_right(self):
-        self.image.clip_draw(self.right_frame_x, self.right_frame_y, 81, 81, self.x, self.y)
-        self.right_frame_x += 74
-        if (self.right_frame_x >= 486):
-            self.right_frame_x = 243
-
-    def go_front(self):
-        self.image.clip_draw(self.up_frame_x, self.up_frame_y, 120, 70, self.x-100, self.y)
-        '''
-        self.up_frame_y += 73
-        if (self.up_frame_y >= 648):
-            self.up_frame_y = 405
-        '''
-    def go_back(self):
-        self.image.clip_draw(self.down_frame_x, self.down_frame_y, 80, 70, self.x, self.y)
-        self.down_frame_y += 73
-        if (self.down_frame_y >= 648):
-            self.down_frame_y = 405
 
     def handle_event(self):
         global running
@@ -140,6 +128,7 @@ class Player:
 
 
                 elif event.key == SDLK_a:
+                    #self.image = load_image('unit_dao_reverse.png')
                     self.horizon_dir -= self.velocity
 
                     self.right_frame_x += 74
@@ -241,6 +230,8 @@ while(running):
     stage.object_draw()
     if(bomb.state==True):
         bomb.draw()
+    if(item.state==True):
+        item.draw()
 
     player.go_update()
     update_canvas()
@@ -252,6 +243,11 @@ while(running):
         player.x = player.x - player.horizon_dir*5
         player.y = player.y - player.vertical_dir * 5
         continue
+    if((player.x>70 and player.x<130) and (player.y> 370 and player.y < 430)):
+        if(item.state==True):
+            item.state = False
+
+
 
     if(player.x<10):
         player.x = 10
